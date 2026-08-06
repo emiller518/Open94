@@ -1,0 +1,25 @@
+rom: NHL Hockey '94  [ T-50656 -00]
+validate: executed=1549416604 predicted=1539797535 verified=1539648226 divergences=0
+          unimplemented=2723 unpredictable=9616346 interrupt-skips=149308
+          coverage=99.38% of executed, accuracy=100.0000%
+          executed PCs not in table: 2723 (RAM: 0, checksum routine: 0)
+            stray PC 007FC4 x44
+            stray PC 00C1B2 x242
+            stray PC 00DB86 x689
+            stray PC 00DB8A x689
+            stray PC 01007C x66
+            stray PC 00E246 x118
+            stray PC 00DB8E x132
+            stray PC 00DB90 x132
+            stray PC 00DB96 x132
+            stray PC 00DBA2 x92
+            stray PC 00DBA6 x132
+            stray PC 00C1AC x142
+            stray PC 00DB9A x40
+            stray PC 00DB9E x40
+            stray PC 01486E x4
+            stray PC 01487A x2
+            stray PC 010032 x27
+          unique instructions verified: 14701 / 24955 (58.91%)
+          coverage list -> native/coverage/out/cov-attract.txt
+done: 150000 frames

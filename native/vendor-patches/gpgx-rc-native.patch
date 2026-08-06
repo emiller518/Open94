@@ -1,0 +1,142 @@
+diff --git a/core/m68k/m68kcpu.c b/core/m68k/m68kcpu.c
+index 07d2514..27546bc 100644
+--- a/core/m68k/m68kcpu.c
++++ b/core/m68k/m68kcpu.c
+@@ -29,6 +29,14 @@ static unsigned char m68ki_cycles[0x10000];
+ 
+ static int irq_latency;
+ 
++#ifdef RC_NATIVE
++/* accessor for the recompiled-native dispatcher (table is static here) */
++unsigned int rc_cycles_for_opcode(unsigned int op)
++{
++  return m68ki_cycles[op & 0xFFFF];
++}
++#endif
++
+ m68ki_cpu_core m68k;
+ 
+ 
+@@ -296,6 +304,17 @@ void m68k_run(unsigned int cycles)
+       cpu_hook(HOOK_M68K_E, 0, REG_PC, 0);
+ #endif
+ 
++#ifdef RC_NATIVE
++    /* Recompiled-native dispatch: if the generated code can execute this
++     * instruction, it updates all CPU/memory/cycle state itself and the
++     * interpreter skips the instruction entirely. */
++    {
++      extern int rc_native_try(unsigned int pc);
++      if (rc_native_try(REG_PC) >= 0)
++        continue;
++    }
++#endif
++
+     /* Decode next instruction */
+     REG_IR = m68ki_read_imm_16();
+ 
+diff --git a/core/vdp_ctrl.c b/core/vdp_ctrl.c
+index e312902..8ae0b1c 100644
+--- a/core/vdp_ctrl.c
++++ b/core/vdp_ctrl.c
+@@ -184,6 +184,31 @@ static const int fifo_timing_h40[] =
+   MCYCLES_PER_LINE + 1972, MCYCLES_PER_LINE + 2100, MCYCLES_PER_LINE + 2356, MCYCLES_PER_LINE + 2484
+ };
+ 
++#ifdef RC_NATIVE
++/* Recomp-harness hooks (declared in vdp_ctrl.h, consumed by
++ * native/harness/lift.c). The observe pointer stays NULL unless the
++ * lift runtime arms it, so every other build is unaffected. */
++void (*rc_hw_observe)(unsigned int port, unsigned int data) = 0;
++
++void rc_vdp_get_state(rc_vdp_state_t *s)
++{
++  int i;
++  s->pending          = pending;
++  s->code             = code;
++  s->addr             = addr;
++  s->dmafill          = dmafill;
++  s->cached_write     = cached_write;
++  s->dma_length       = dma_length;
++  s->status           = status;
++  s->reg1             = reg[1];
++  s->fifo_idx         = fifo_idx;
++  for (i = 0; i < 4; i++) s->fifo_cycles_[i] = fifo_cycles[i];
++  s->fifo_timing_     = fifo_timing;
++  s->fifo_byte_access = fifo_byte_access;
++  s->mcycles_vdp_     = mcycles_vdp;
++}
++#endif
++
+ /* DMA Timings (number of access slots per line) */
+ static const uint8 dma_timing[2][2] =
+ {
+@@ -775,6 +800,9 @@ void vdp_dma_update(unsigned int cycles)
+ 
+ void vdp_68k_ctrl_w(unsigned int data)
+ {
++#ifdef RC_NATIVE
++  if (rc_hw_observe) rc_hw_observe(0xC00004, data);
++#endif
+   /* Check pending flag */
+   if (pending == 0)
+   {
+@@ -2342,6 +2370,9 @@ static void vdp_bus_w(unsigned int data)
+ 
+ static void vdp_68k_data_w_m4(unsigned int data)
+ {
++#ifdef RC_NATIVE
++  if (rc_hw_observe) rc_hw_observe(0xC00000, data);
++#endif
+   /* Clear pending flag */
+   pending = 0;
+ 
+@@ -2436,6 +2467,9 @@ static void vdp_68k_data_w_m4(unsigned int data)
+ 
+ static void vdp_68k_data_w_m5(unsigned int data)
+ {
++#ifdef RC_NATIVE
++  if (rc_hw_observe) rc_hw_observe(0xC00000, data);
++#endif
+   /* Clear pending flag */
+   pending = 0;
+ 
+diff --git a/core/vdp_ctrl.h b/core/vdp_ctrl.h
+index 4b9d042..cc45b4a 100644
+--- a/core/vdp_ctrl.h
++++ b/core/vdp_ctrl.h
+@@ -105,4 +105,34 @@ extern unsigned int vdp_hvc_r(unsigned int cycles);
+ extern void vdp_test_w(unsigned int data);
+ extern int vdp_68k_irq_ack(int int_level);
+ 
++#ifdef RC_NATIVE
++/* Recomp-harness hooks (see native/harness/lift.c).
++ * rc_hw_observe: called at the top of the 68k ctrl/data port write
++ * handlers so shadow-verify can compare a lifted routine's staged port
++ * writes against the interpreter's real bus activity.
++ * rc_vdp_get_state: read-only snapshot of the VDP internals the lift
++ * runtime's stageability predicate needs (most are static in
++ * vdp_ctrl.c). */
++extern void (*rc_hw_observe)(unsigned int port, unsigned int data);
++
++typedef struct
++{
++  int pending;
++  int code;
++  unsigned int addr;
++  int dmafill;
++  int cached_write;
++  unsigned int dma_length;
++  unsigned int status;
++  unsigned int reg1;              /* reg[1] */
++  int fifo_idx;
++  unsigned int fifo_cycles_[4];
++  const int *fifo_timing_;
++  int fifo_byte_access;
++  unsigned int mcycles_vdp_;
++} rc_vdp_state_t;
++
++extern void rc_vdp_get_state(rc_vdp_state_t *s);
++#endif
++
+ #endif /* _VDP_H_ */

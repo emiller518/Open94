@@ -1,0 +1,23 @@
+script: 512 input events
+rom: NHL Hockey '94  [ T-50656 -00]
+validate: executed=1641822151 predicted=1633018788 verified=1632869096 divergences=0
+          unimplemented=813 unpredictable=8802550 interrupt-skips=149691
+          coverage=99.46% of executed, accuracy=100.0000%
+          executed PCs not in table: 813 (RAM: 0, checksum routine: 0)
+            stray PC 007FC4 x156
+            stray PC 00E246 x14
+            stray PC 00C1B2 x52
+            stray PC 00DB86 x181
+            stray PC 00DB8A x181
+            stray PC 01486E x4
+            stray PC 00DB8E x38
+            stray PC 00DB90 x38
+            stray PC 00DB96 x38
+            stray PC 00DBA2 x26
+            stray PC 00DBA6 x38
+            stray PC 00C1AC x23
+            stray PC 00DB9A x12
+            stray PC 00DB9E x12
+          unique instructions verified: 14038 / 24955 (56.25%)
+          coverage list -> native/coverage/out/cov-rand1.txt
+done: 150000 frames

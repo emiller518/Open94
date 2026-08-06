@@ -1,0 +1,964 @@
+/* Registry of lifted routines — the decomp's table of contents. */
+#include "../harness/lift.h"
+
+void SaveBuf_VerifyChecksum(lift_ctx *);
+void SRAM_ReadBytes(lift_ctx *);
+void SRAM_WriteBytes(lift_ctx *);
+void SRAM_RecalcChecksum(lift_ctx *);
+void SRAM_FormatSave(lift_ctx *);
+void Render_WorldToScreen(lift_ctx *);
+void Sprite_EmitPieces(lift_ctx *);
+void Sprite_EmitObject(lift_ctx *);
+void Render_DrawObject(lift_ctx *);
+void Render_DrawObjectList(lift_ctx *);
+void Sprite_EmitClippedPieces(lift_ctx *);
+void Sprite_EmitClippedRun(lift_ctx *);
+void Render_DrawOverlays(lift_ctx *);
+void Render_DrawOffscreenArrow(lift_ctx *);
+void Overlay_TrackTargets(lift_ctx *);
+void Overlay_DrawNumber(lift_ctx *);
+void Overlay_QueueGlyph(lift_ctx *);
+void TickTimerTable_B04A(lift_ctx *);
+void Anim_StepObject(lift_ctx *);
+void Anim_SetScript(lift_ctx *);
+void Object_FrameVector(lift_ctx *);
+void Team_SelectBlocks(lift_ctx *);
+void Team_StatWord(lift_ctx *);
+void Vector_WrapCounters(lift_ctx *);
+void Vector_ToOctant(lift_ctx *);
+void Controls_MapDirection(lift_ctx *);
+void Controls_ReadEdge_BEF6(lift_ctx *);
+void Controls_ReadEdge_BEF7(lift_ctx *);
+void Controls_MaskAmbiguousDir(lift_ctx *);
+void Controls_DebounceDirection(lift_ctx *);
+void Overlay_DrawTrackedArrows(lift_ctx *);
+void Render_DrawIndicatorPieces(lift_ctx *);
+void Overlay_SetTrackedNibble(lift_ctx *);
+void Camera_UpdateScroll(lift_ctx *);
+void Game_RecordSnapshot(lift_ctx *);
+void Render_UpdateZoneFlag(lift_ctx *);
+void Object_ResetOnFrameGate(lift_ctx *);
+void Flag_SetC2FEBit1(lift_ctx *);
+void Camera_UpdateAnchorFlags(lift_ctx *);
+void Camera_ComputeShakeOffset(lift_ctx *);
+void Anim_ForceIdleFacingFlip(lift_ctx *);
+void Nullsub_F84F8(lift_ctx *);
+void Nullsub_1454A(lift_ctx *);
+void Nullsub_F6E38(lift_ctx *);
+void Object_ClampOffsetIfNotTracked(lift_ctx *);
+void Team_TestStatFlag(lift_ctx *);
+void AI_CheckLaneBlocked(lift_ctx *);
+void Object_ComputeApproachOctant(lift_ctx *);
+void Object_AdvanceStateMod8(lift_ctx *);
+void sub_CAE0(lift_ctx *);
+void sub_FE7FC(lift_ctx *);
+void sub_FE864(lift_ctx *);
+void sub_FE8EC(lift_ctx *);
+void sub_EE58(lift_ctx *);
+void sub_FE756(lift_ctx *);
+void sub_FC570(lift_ctx *);
+void sub_FC47C(lift_ctx *);
+void sub_17CA0(lift_ctx *);
+void sub_17D16(lift_ctx *);
+void sub_18AE8(lift_ctx *);
+void sub_F87EA(lift_ctx *);
+void Object_TriggerStateAdvance(lift_ctx *);
+void Sprite_BuildPieceHeader(lift_ctx *);
+void Controls_ReadEdge_BEF8(lift_ctx *);
+void Controls_ReadEdge_BEF9(lift_ctx *);
+void Object_RingBufferWriteByte(lift_ctx *);
+void Object_RetreatStateMod8(lift_ctx *);
+void Stat_AccumulateAndDecay(lift_ctx *);
+void Team_BumpStatByDistance(lift_ctx *);
+void Team_BumpStatIfFlagged(lift_ctx *);
+void Clamp_ByteToRange30(lift_ctx *);
+void Team_DecayPenaltyTimers(lift_ctx *);
+void Team_ScanPenalties(lift_ctx *);
+void Object_QueueFrameFromTable(lift_ctx *);
+void Text_WriteTwoDigits(lift_ctx *);
+void Piece_LookupFrameCount(lift_ctx *);
+void Piece_AdvanceChain(lift_ctx *);
+void Script_DecodeRotatedField(lift_ctx *);
+void Ptr_ChainAdd(lift_ctx *);
+void Text_AlignBufferEven(lift_ctx *);
+void Text_AppendInlineString(lift_ctx *);
+void Text_BuildNumberNameRecord(lift_ctx *);
+void Text_BuildNumberNameForCurrentSlot(lift_ctx *);
+void Score_ClearLeadAnnouncedLatch(lift_ctx *);
+void Score_AnnounceLeadChange(lift_ctx *);
+void Text_FormatScorerName(lift_ctx *);
+void Text_BuildPlayedByRecordD042(lift_ctx *);
+void Text_BuildPlayedByRecordD044(lift_ctx *);
+void Sram_SyncTeamRecordWrite(lift_ctx *);
+void Sram_SyncFixedD45ABlockWrite(lift_ctx *);
+void Sram_SyncScoreRecordWrite(lift_ctx *);
+void Sram_SyncAltTeamRecord(lift_ctx *);
+void Sram_SyncAltTeamRecordWrite(lift_ctx *);
+void Clamp_HalveBelow50(lift_ctx *);
+void Anim_StartScript46A(lift_ctx *);
+void Calc_HalvingAccumulator(lift_ctx *);
+void Team_CachePieceFrameCounts(lift_ctx *);
+void Anim_ResetCycleCounters(lift_ctx *);
+void Object_TransferSelectionFlag(lift_ctx *);
+void Object_UpdateSelectedSlot_A(lift_ctx *);
+void Object_UpdateSelectedSlot_B(lift_ctx *);
+void Range_WrapClamp(lift_ctx *);
+void Color_CopyBytesModeOrder(lift_ctx *);
+void Anim_QueueScoreboardEvent(lift_ctx *);
+void Text_AppendString(lift_ctx *);
+void Roster_TickPenaltyCountdowns(lift_ctx *);
+void Sfx_SelectCue(lift_ctx *);
+void Buf_CopyBytes(lift_ctx *);
+void Sfx_ResetVoiceStateTable(lift_ctx *);
+void Anim_ResetLineChange(lift_ctx *);
+void Piece_CopyRecordToCache(lift_ctx *);
+void Object_QueueFrame18(lift_ctx *);
+void Object_ProcessLineChangeSlot(lift_ctx *);
+void Anim_ResetLineChangeBothTeams(lift_ctx *);
+void Lookup_D050Table(lift_ctx *);
+void Sram_LoadSnapshotBuffer(lift_ctx *);
+void Piece_ResolveTripleChain(lift_ctx *);
+void Team_CompareRoster24(lift_ctx *);
+void Reset_D048Table(lift_ctx *);
+void Roster_TickPenaltyCountdownsBothTeams(lift_ctx *);
+void Roster_ResetPenaltySlots(lift_ctx *);
+void Object_FindOccupiedZoneBackward(lift_ctx *);
+void Text_WriteNullThenByteFwd(lift_ctx *);
+void Text_WriteNullThenByteBack(lift_ctx *);
+void Lookup_TeamOverallRating(lift_ctx *);
+void Lookup_JumpTableEntry(lift_ctx *);
+void Roster_UpdateResultFlag(lift_ctx *);
+void Piece_CopyRecordToCacheBothTeams(lift_ctx *);
+void Roster_CountActiveSlots(lift_ctx *);
+void Roster_ResetActiveCount(lift_ctx *);
+void Roster_ResetActiveCountHome(lift_ctx *);
+void Copy_5605ABlockToBD28(lift_ctx *);
+void Sfx_ResetQueueState(lift_ctx *);
+void Calc_QueueDelayCEF0(lift_ctx *);
+void Queue_AdvanceHomeCursor(lift_ctx *);
+void Queue_AdvanceAwayCursor(lift_ctx *);
+void Queue_AdvanceHomeCursor2(lift_ctx *);
+void Queue_AdvanceAwayCursor2(lift_ctx *);
+void Sfx_InitPlaybackState(lift_ctx *);
+void Sfx_SetPlaybackFlag(lift_ctx *);
+void Roster_UpdateBothResultFlags(lift_ctx *);
+void Team_LoadAndCacheTeamData(lift_ctx *);
+void Team_RefreshDataCache(lift_ctx *);
+void Object_TestOrientedSign(lift_ctx *);
+void Object_TestFacingOctantAttr(lift_ctx *);
+void Object_ComputeApproachGate(lift_ctx *);
+void Team_ResolveDisplayNamePtr(lift_ctx *);
+void Sram_SyncTeamRecord(lift_ctx *);
+void Sram_SyncFixedD45ABlock(lift_ctx *);
+void Sram_SyncHomeAwayRecord(lift_ctx *);
+void Overlay_ProcessTrackedEntries(lift_ctx *);
+void Overlay_UpdateTrackedNudge(lift_ctx *);
+void Game_ResetPerGameState(lift_ctx *);
+void Object_InitTableB04AFill(lift_ctx *);
+void Object_ResetAndQueueEvent(lift_ctx *);
+void Team_ComputeAndSortLineStats(lift_ctx *);
+void Team_RefreshLineIndicators(lift_ctx *);
+void Team_SumLineStatBytes(lift_ctx *);
+void Team_ComputeLineDelta(lift_ctx *);
+void Sfx_ResetVoiceStateFlags(lift_ctx *);
+void Sfx_AdvanceCueStreamEntry(lift_ctx *);
+void Object_ApproachAndSetScript(lift_ctx *);
+void Lookup_PenaltyOrTierTable(lift_ctx *);
+void Object_SortDrawOrderByDepth(lift_ctx *);
+void Object_ResetOverlaysAndSlots(lift_ctx *);
+void Sram_SyncScoreRecord(lift_ctx *);
+void Object_LookupRecordThenSyncScore(lift_ctx *);
+void Object_SwapLineupBuffers(lift_ctx *);
+void Text_ExpandDigitStream(lift_ctx *);
+void Roster_ClearFlagIfNoOverLimit(lift_ctx *);
+void Object_ClassifyZone(lift_ctx *);
+void Rng_NextScaled(lift_ctx *);
+void Math_SqrtU32(lift_ctx *);
+void Render_QueueRowTilesC3F6(lift_ctx *);
+void Render_DrawClippedRunGroups(lift_ctx *);
+void Object_ScaleImpulseByObjectField(lift_ctx *);
+void Sprite_EmitHeightBandPieces(lift_ctx *);
+void Camera_UpdateShadowGate(lift_ctx *);
+void Render_QueueCameraZonePieces(lift_ctx *);
+void Object_ComputeBoardImpulse(lift_ctx *);
+void Object_ProjectScreenColumn(lift_ctx *);
+void Rng_NextSignedOffset(lift_ctx *);
+void Object_ProjectGoalCreaseColumns(lift_ctx *);
+void Object_TriggerBoardMarkerScript(lift_ctx *);
+void Team_ComputeClampedTendencyIndex(lift_ctx *);
+void Object_ScaledTeamStatWord(lift_ctx *);
+void Text_FormatFixedWidthDecimal(lift_ctx *);
+void sub_C644(lift_ctx *);
+void sub_10EB4(lift_ctx *);
+void sub_132E2(lift_ctx *);
+void sub_13276(lift_ctx *);
+void sub_1826C(lift_ctx *);
+void sub_18032(lift_ctx *);
+void sub_F693E(lift_ctx *);
+void sub_CCE8(lift_ctx *);
+void sub_112BC(lift_ctx *);
+void sub_158F2(lift_ctx *);
+void sub_15832(lift_ctx *);
+void sub_15788(lift_ctx *);
+void sub_FEB54(lift_ctx *);
+void sub_FA9F8(lift_ctx *);
+void sub_BE26(lift_ctx *);
+void sub_C566(lift_ctx *);
+void sub_FE71C(lift_ctx *);
+void sub_FE556(lift_ctx *);
+void sub_F998E(lift_ctx *);
+void sub_F98C6(lift_ctx *);
+void sub_FCB9A(lift_ctx *);
+void sub_1211A(lift_ctx *);
+void sub_12174(lift_ctx *);
+void sub_1284A(lift_ctx *);
+void sub_128A4(lift_ctx *);
+void sub_1298C(lift_ctx *);
+void sub_14A54(lift_ctx *);
+void sub_131F4(lift_ctx *);
+void sub_F70A2(lift_ctx *);
+void sub_1803E(lift_ctx *);
+void sub_C67A(lift_ctx *);
+void sub_F6AA(lift_ctx *);
+void sub_F6C6(lift_ctx *);
+void sub_FF9A8(lift_ctx *);
+void sub_BFBC(lift_ctx *);
+void sub_FD78A(lift_ctx *);
+void sub_FD22(lift_ctx *);
+void Game_ResetPeriodStats(lift_ctx *);
+void Team_ClearLineTable(lift_ctx *);
+void Roster_PartitionBothTeams(lift_ctx *);
+void Roster_PartitionListedPlayers(lift_ctx *);
+void Text_InitialCharToIndex(lift_ctx *);
+void Text_NormalizeInitialChar(lift_ctx *);
+void Roster_LoadSelectedEntry(lift_ctx *);
+void Text_TrimTrailingSpaces(lift_ctx *);
+void Menu_SaveRowIndex(lift_ctx *);
+void Nullsub_6(lift_ctx *);
+void Object_ResetSlotTimers(lift_ctx *);
+void Object_StoreClampedTimer(lift_ctx *);
+void Team_SelectByPossessionFlag(lift_ctx *);
+void Menu_WrapCursorWord(lift_ctx *);
+void Team_SelectByStatWord(lift_ctx *);
+void Stack_UnwindNineRegs(lift_ctx *);
+void Iter_AdvanceObjectCursor(lift_ctx *);
+void Camera_ApplyTrackedTarget(lift_ctx *);
+void Player_ZoneWhistleCheck(lift_ctx *);
+void Player_CountGoalOrAssist(lift_ctx *);
+void Player_FaceoffOrReset(lift_ctx *);
+void Attr_SumPlayerRating(lift_ctx *);
+void Attr_AddTableEntry(lift_ctx *);
+void Team_SelectActiveBlock(lift_ctx *);
+void Text_MeasureEntryName(lift_ctx *);
+void Text_AppendIndexedString(lift_ctx *);
+void Menu_StepBoundedCursor(lift_ctx *);
+void Roster_CountLeadingNibbles(lift_ctx *);
+void Roster_RatingWithNibbleBonus(lift_ctx *);
+void Roster_CountLineEntries(lift_ctx *);
+void Roster_CacheBothLineCounts(lift_ctx *);
+void Stats_SelectLeaderSlot(lift_ctx *);
+void Roster_FormatJerseyNumber(lift_ctx *);
+void Roster_CacheBothNibbleCounts(lift_ctx *);
+void Stats_TrackTeamLeader(lift_ctx *);
+void Lineup_MatchShiftTotals(lift_ctx *);
+void Stats_PickTeamRecordHolder(lift_ctx *);
+void Stats_UpdateSeasonLeaders(lift_ctx *);
+void Stats_RecordGameResult(lift_ctx *);
+void Stats_CommitSeasonRecords(lift_ctx *);
+void Lineup_AverageLineRating(lift_ctx *);
+void Period_SwapSidesAndSlots(lift_ctx *);
+void Lineup_PickBestLine(lift_ctx *);
+void Season_ClearTeamFromRecords(lift_ctx *);
+void Season_CommitTeamName(lift_ctx *);
+void Text_EmitTeamName(lift_ctx *);
+void Text_CaptionOneTeam(lift_ctx *);
+void Text_CaptionTwoTeams(lift_ctx *);
+void Text_CaptionByTeam(lift_ctx *);
+void Text_CaptionVsTeams(lift_ctx *);
+void Standings_SortDivision(lift_ctx *);
+void Text_FormatClock(lift_ctx *);
+void Draft_ScorePlayers(lift_ctx *);
+void sub_18002(lift_ctx *);
+void sub_17E42(lift_ctx *);
+void sub_17D80(lift_ctx *);
+void sub_7814(lift_ctx *);
+void sub_11D06(lift_ctx *);
+void sub_12EF6(lift_ctx *);
+void sub_FECAA(lift_ctx *);
+void Nullsub_CBE2(lift_ctx *);
+void Fn_13384(lift_ctx *);
+void Fn_13396(lift_ctx *);
+void sub_13E26(lift_ctx *);
+void Camera_LatchScrollAndFlag(lift_ctx *);
+void sub_BA04(lift_ctx *);
+void sub_13848(lift_ctx *);
+void sub_13862(lift_ctx *);
+void sub_14A94(lift_ctx *);
+void sub_1323E(lift_ctx *);
+void Controls_ReadPadDispatch(lift_ctx *);
+void sub_C868(lift_ctx *);
+void sub_13378(lift_ctx *);
+void sub_18B6E(lift_ctx *);
+void sub_A4F6(lift_ctx *);
+void sub_A67C(lift_ctx *);
+void sub_A68C(lift_ctx *);
+void sub_A88C(lift_ctx *);
+void sub_FC184(lift_ctx *);
+void sub_182A2(lift_ctx *);
+void sub_1833A(lift_ctx *);
+void sub_18192(lift_ctx *);
+void sub_181F6(lift_ctx *);
+void sub_1820E(lift_ctx *);
+void sub_1821A(lift_ctx *);
+void sub_18236(lift_ctx *);
+void sub_180FC(lift_ctx *);
+void sub_18380(lift_ctx *);
+void sub_FE696(lift_ctx *);
+void sub_77E4(lift_ctx *);
+void sub_17572(lift_ctx *);
+void sub_FED2A(lift_ctx *);
+void sub_FEE60(lift_ctx *);
+void sub_878E(lift_ctx *);
+void sub_9F7E(lift_ctx *);
+void sub_8898(lift_ctx *);
+void sub_F6F8C(lift_ctx *);
+void sub_F66EE(lift_ctx *);
+void nullsub_4(lift_ctx *);
+void sub_FEC98(lift_ctx *);
+void sub_FECA2(lift_ctx *);
+void sub_FCA1E(lift_ctx *);
+void sub_FDD92(lift_ctx *);
+void VDP_SetAddress(lift_ctx *);          /* vdp.c — staged hw writes */
+void Unpack_FlushPage(lift_ctx *);        /* vdp.c — the RLE unpacker chain */
+void Unpack_RleStream(lift_ctx *);
+void Unpack_Block(lift_ctx *);
+void Unpack_BlockDirect(lift_ctx *);
+void Unpack_BlockCached(lift_ctx *);
+void Tilemap_DrawRegion(lift_ctx *);      /* vdp.c - sub_1169A */
+void Board_DrawPanel(lift_ctx *);         /* vdp.c */
+void Board_DrawDeferredPanel(lift_ctx *); /* vdp.c */
+void Text_BuildNumberSurname(lift_ctx *); /* game.c */
+void Board_DrawTeamLogoForId(lift_ctx *); /* game.c */
+void Board_DrawPlayerNameAndLogo(lift_ctx *); /* game.c */
+/* wave 52 — the second tier of Unpack / Tilemap_DrawRegion callers (vdp.c) */
+void Gfx_UnpackAAC5A_SetBaseB012(lift_ctx *);
+void Gfx_Unpack55B86_SetBaseB01E(lift_ctx *);
+void Gfx_UnpackABA1C_AtBase2(lift_ctx *);
+void Gfx_UnpackAB928_AtBaseB016(lift_ctx *);
+void Gfx_UnpackA4B5C_AtBaseB01A(lift_ctx *);
+void Gfx_Unpack5C410_AtBaseB026(lift_ctx *);
+void Gfx_UnpackAFE1ADualMode(lift_ctx *);
+void Gfx_UnpackIndexedTeamBlob(lift_ctx *);
+void Tilemap_DrawTwoRowStripAFE12(lift_ctx *);
+void Tilemap_DrawB3640Panel(lift_ctx *);
+void Tilemap_DrawABA14Panel(lift_ctx *);
+void Card_DrawPortraitAndClearCaption(lift_ctx *);
+void Menu_DrawPanelBackdrop(lift_ctx *);
+void Menu_DrawTeamCardPane(lift_ctx *);
+void Menu_DrawTeamPortraitAtCursor(lift_ctx *);
+void Board_DrawTitleBannerF0(lift_ctx *);
+void Board_DrawFullPanelFF(lift_ctx *);
+/* wave 57 — expired-skip re-triages + the cold front (vdp.c) */
+void VDP_CommitScrollPair(lift_ctx *);
+void Menu_DrawMatchupTeamStrips(lift_ctx *);
+void Gfx_Unpack5CF6C_AtBaseB026(lift_ctx *);
+void Gfx_UnpackA78B6_AtBaseB01C(lift_ctx *);
+void Gfx_Unpack55BFE_AtBaseB026(lift_ctx *);
+void Lineup_DrawRatingMeter(lift_ctx *);
+void Overlay_DrawLineChangeList(lift_ctx *);
+/* wave 58 — the last board row: sub_FBD7A and its shared callee (vdp.c) */
+void Records_DrawListPage(lift_ctx *);
+void Records_DrawRankPrefix(lift_ctx *);
+void Sfx_TickCueStream(lift_ctx *);       /* game.c — sub_FE2C8 */
+/* wave 53 — the loc_F8796 shared-tail siblings + sub_F85B0 (vdp.c) */
+void Menu_DrawPanelBackdropAt1C(lift_ctx *);
+void Menu_DrawPanelBackdropAt18(lift_ctx *);
+void Menu_DrawPanelBackdropAt3(lift_ctx *);
+void Menu_DrawOptionCardPane(lift_ctx *);
+/* wave 54 — the loc_FD1A4 and loc_18B7E shared tails */
+void Card_DrawPortraitWithFallback(lift_ctx *);
+void Card_DrawBothTeamPortraits(lift_ctx *);
+void Text_BuildSurnameNoPad(lift_ctx *);
+/* wave 55 */
+void Clock_RenderGameTime(lift_ctx *);
+/* wave 56 */
+void Controls_LatchMenuStep(lift_ctx *);
+void Text_SetCursorVramAddr(lift_ctx *);
+void Text_FillRows(lift_ctx *);
+void Text_EmitFrameTile(lift_ctx *);
+void Text_EmitFrameRow(lift_ctx *);
+void Text_DrawFrame(lift_ctx *);
+void Text_DrawString(lift_ctx *);
+void Text_DrawInlineString(lift_ctx *);
+void Text_ClearPeriodLabelBlock(lift_ctx *);
+void Shot_PlanPuckFlight(lift_ctx *);
+void Shot_PickAimPoint(lift_ctx *);
+void Text_PlotTileAt(lift_ctx *);
+void VDP_FillVramWords(lift_ctx *);
+void Text_EscSetPlane(lift_ctx *);
+void Text_EscSetColumn(lift_ctx *);
+void Text_EscSetRow(lift_ctx *);
+void Text_EscAddColumn(lift_ctx *);
+void Text_EscAddRow(lift_ctx *);
+void Text_EscSetCharsetRow(lift_ctx *);
+void Text_EscSetAll(lift_ctx *);
+void Text_DrawTableString(lift_ctx *);
+void Text_DrawInlineTableString(lift_ctx *);
+void Text_SkipChunksThenDraw(lift_ctx *);
+void Menu_DrawGoalieModeLabel(lift_ctx *);
+void Hud_DrawFaceoffStrengthMeter(lift_ctx *);
+void Text_DrawTwoSpaces(lift_ctx *);
+void Stat_DrawTeamOverall(lift_ctx *);
+void Text_ClearMenuBody(lift_ctx *);
+void Menu_DrawSetupLabels(lift_ctx *);
+void Text_CursorToNameSlot(lift_ctx *);
+void Text_DrawNameFieldCursor(lift_ctx *);
+void Stat_DrawShotTotalCell(lift_ctx *);
+void Stat_DrawShotsByPeriodRow(lift_ctx *);
+void Records_DrawColumnHeader(lift_ctx *);
+void Text_DrawFrameWithSavedWidth(lift_ctx *);
+void Text_DrawScaledLetterGrade(lift_ctx *);
+void Roster_DrawStatColumnEntry(lift_ctx *);
+void Records_BuildNameChunk(lift_ctx *);
+void Stat_DrawTeamRatingBlock(lift_ctx *);
+void Records_ClearListArea(lift_ctx *);
+void Stat_DrawOverallRatingPercent(lift_ctx *);
+void Board_DrawScoringLine(lift_ctx *);
+void Stat_DrawGoalieSaves(lift_ctx *);
+void Text_DrawPeriodAndClock(lift_ctx *);
+void Roster_DrawPenaltyLine(lift_ctx *);
+void Roster_DrawPenaltyLineAtRow(lift_ctx *);
+void Roster_DrawPenaltyLineAtRowLower(lift_ctx *);
+void Slider_ApplyPendingStep(lift_ctx *);
+void Slider_SetValueAndRedraw(lift_ctx *);
+void Slider_DrawArrows(lift_ctx *);
+void Slider_DrawArrowsAlt(lift_ctx *);
+void VDP_FlushPalette(lift_ctx *);
+void Nibble_ExpandToWords(lift_ctx *);
+void Text_DrawDashedDigitPair(lift_ctx *);
+void Text_HexToAscii8(lift_ctx *);
+void Aim_ClampDeltaToSpan(lift_ctx *);
+void Event_LatchFacingAndSetFlags(lift_ctx *);
+void Camera_CapZoneLevel(lift_ctx *);
+void Roster_DrawNameForSelectedTeam(lift_ctx *);
+void Roster_DrawStatusLine(lift_ctx *);
+void Roster_DrawStatusLineAtRow(lift_ctx *);
+void Roster_DrawStatusLineAtRowLower(lift_ctx *);
+void Text_DrawFlagLabel(lift_ctx *);
+void Text_ClearListBody(lift_ctx *);
+void Board_DrawStatPanel(lift_ctx *);
+void Board_SetCrowdCaption(lift_ctx *);
+void Board_DrawSaveLine(lift_ctx *);
+void Text_DrawScoreboardCell(lift_ctx *);
+void Text_DrawBigChar(lift_ctx *);
+void Text_DrawBigString(lift_ctx *);
+void Text_DrawBigInlineString(lift_ctx *);
+void Roster_DrawOnePlayerLine(lift_ctx *);
+void Roster_DrawLinesBothStates(lift_ctx *);
+void Text_DrawIndexedChunk(lift_ctx *);
+void Text_DrawCenteredList(lift_ctx *);
+void Text_DrawLabelAndNumber(lift_ctx *);
+void Text_DrawTeamLabelAndNumber(lift_ctx *);
+void Roster_DrawTeamHeader(lift_ctx *);
+void Board_AdvanceMessageQueue(lift_ctx *);
+void Board_LoadMessageTilemap(lift_ctx *);
+void Board_DrawMessageText(lift_ctx *);
+void Board_ClearMessageLine(lift_ctx *);
+void Board_UpdateForNearestPlayer(lift_ctx *);
+void Text_SetupStatusBanner(lift_ctx *);
+void Text_ClearStatusBanner(lift_ctx *);
+void Stat_DrawCountAtCE(lift_ctx *);
+void Stat_DrawCountAtB4(lift_ctx *);
+void Overlay_DrawPeriodLabel(lift_ctx *);
+void Menu_ClearOptionPanes(lift_ctx *);
+void Object_TestTeamSideFlag(lift_ctx *);
+void Object_TestFacingAgainstSide(lift_ctx *);
+void sub_88C8(lift_ctx *);
+void sub_8928(lift_ctx *);
+void sub_FE6D2(lift_ctx *);
+
+const lift_routine lift_routines[] = {
+  {0x01A14E, SaveBuf_VerifyChecksum, "SaveBuf_VerifyChecksum"},
+  {0x01A244, SRAM_ReadBytes,         "SRAM_ReadBytes"},
+  {0x01A1E4, SRAM_WriteBytes,        "SRAM_WriteBytes"},
+  {0x01A206, SRAM_RecalcChecksum,    "SRAM_RecalcChecksum"},
+  {0x01A19C, SRAM_FormatSave,        "SRAM_FormatSave"},
+  {0x016920, Render_WorldToScreen,   "Render_WorldToScreen"},
+  {0x016178, Sprite_EmitPieces,      "Sprite_EmitPieces"},
+  {0x0167AA, Sprite_EmitObject,      "Sprite_EmitObject"},
+  {0x016782, Render_DrawObject,      "Render_DrawObject"},
+  {0x0165FC, Render_DrawObjectList,  "Render_DrawObjectList"},
+  {0x016246, Sprite_EmitClippedPieces, "Sprite_EmitClippedPieces"},
+  {0x016226, Sprite_EmitClippedRun,  "Sprite_EmitClippedRun"},
+  {0x01661A, Render_DrawOverlays,    "Render_DrawOverlays"},
+  {0x0164D6, Render_DrawOffscreenArrow, "Render_DrawOffscreenArrow"},
+  {0x016648, Overlay_TrackTargets,   "Overlay_TrackTargets"},
+  {0x0166E6, Overlay_DrawNumber,     "Overlay_DrawNumber"},
+  {0x01674A, Overlay_QueueGlyph,     "Overlay_QueueGlyph"},
+  {0x0FF3F8, TickTimerTable_B04A,    "TickTimerTable_B04A"},
+  {0x00AEE4, Anim_StepObject,        "Anim_StepObject"},
+  {0x01073A, Anim_SetScript,         "Anim_SetScript"},
+  {0x0106E0, Object_FrameVector,     "Object_FrameVector"},
+  {0x013040, Team_SelectBlocks,      "Team_SelectBlocks"},
+  {0x01575A, Team_StatWord,          "Team_StatWord"},
+  {0x010E1A, Vector_WrapCounters,    "Vector_WrapCounters"},
+  {0x010676, Vector_ToOctant,        "Vector_ToOctant"},
+  {0x0113A0, Controls_MapDirection,  "Controls_MapDirection"},
+  {0x011340, Controls_ReadEdge_BEF6, "Controls_ReadEdge_BEF6"},
+  {0x011358, Controls_ReadEdge_BEF7, "Controls_ReadEdge_BEF7"},
+  {0x0112F0, Controls_MaskAmbiguousDir,  "Controls_MaskAmbiguousDir"},
+  {0x011318, Controls_DebounceDirection, "Controls_DebounceDirection"},
+  {0x016480, Overlay_DrawTrackedArrows,  "Overlay_DrawTrackedArrows"},
+  {0x016044, Render_DrawIndicatorPieces, "Render_DrawIndicatorPieces"},
+  {0x00C656, Overlay_SetTrackedNibble, "Overlay_SetTrackedNibble"},
+  {0x00AFCA, Camera_UpdateScroll,    "Camera_UpdateScroll"},
+  {0x00A8CA, Game_RecordSnapshot,    "Game_RecordSnapshot"},
+  {0x0F8BA0, Render_UpdateZoneFlag,  "Render_UpdateZoneFlag"},
+  {0x0102EC, Object_ResetOnFrameGate, "Object_ResetOnFrameGate"},
+  {0x0FEF66, Flag_SetC2FEBit1,      "Flag_SetC2FEBit1"},
+  {0x010246, Camera_UpdateAnchorFlags, "Camera_UpdateAnchorFlags"},
+  {0x010588, Camera_ComputeShakeOffset, "Camera_ComputeShakeOffset"},
+  {0x0102A8, Anim_ForceIdleFacingFlip, "Anim_ForceIdleFacingFlip"},
+  {0x0F84F8, Nullsub_F84F8,          "Nullsub_F84F8"},
+  {0x01454A, Nullsub_1454A,          "Nullsub_1454A"},
+  {0x0F6E38, Nullsub_F6E38,          "Nullsub_F6E38"},
+  {0x00DB3E, Object_ClampOffsetIfNotTracked, "Object_ClampOffsetIfNotTracked"},
+  {0x0FEFCC, Team_TestStatFlag,      "Team_TestStatFlag"},
+  {0x00DE2A, AI_CheckLaneBlocked,    "AI_CheckLaneBlocked"},
+  {0x00E594, Object_ComputeApproachOctant, "Object_ComputeApproachOctant"},
+  {0x0000EE58, sub_EE58, "sub_EE58"},
+  {0x010646, Object_AdvanceStateMod8, "Object_AdvanceStateMod8"},
+  {0x00CAE0, sub_CAE0, "sub_CAE0"},
+  {0x00CB3A, Object_TriggerStateAdvance, "Object_TriggerStateAdvance"},
+  {0x016468, Sprite_BuildPieceHeader, "Sprite_BuildPieceHeader"},
+  {0x011370, Controls_ReadEdge_BEF8, "Controls_ReadEdge_BEF8"},
+  {0x011388, Controls_ReadEdge_BEF9, "Controls_ReadEdge_BEF9"},
+  {0x010662, Object_RingBufferWriteByte, "Object_RingBufferWriteByte"},
+  {0x010658, Object_RetreatStateMod8, "Object_RetreatStateMod8"},
+  {0x007A76, Stat_AccumulateAndDecay, "Stat_AccumulateAndDecay"},
+  {0x01299C, Team_BumpStatByDistance, "Team_BumpStatByDistance"},
+  {0x0FE14C, Team_BumpStatIfFlagged, "Team_BumpStatIfFlagged"},
+  {0x015D84, Clamp_ByteToRange30, "Clamp_ByteToRange30"},
+  {0x007A0C, Team_DecayPenaltyTimers, "Team_DecayPenaltyTimers"},
+  {0x0079F8, Team_ScanPenalties,   "Team_ScanPenalties"},
+  {0x015A88, Object_QueueFrameFromTable, "Object_QueueFrameFromTable"},
+  {0x018BDC, Text_WriteTwoDigits,  "Text_WriteTwoDigits"},
+  {0x0FD492, Piece_LookupFrameCount, "Piece_LookupFrameCount"},
+  {0x018BC8, Piece_AdvanceChain,   "Piece_AdvanceChain"},
+  {0x011B3C, Script_DecodeRotatedField, "Script_DecodeRotatedField"},
+  {0x013510, Ptr_ChainAdd,         "Ptr_ChainAdd"},
+  {0x018BAE, Text_AlignBufferEven, "Text_AlignBufferEven"},
+  {0x018AE8, sub_18AE8, "sub_18AE8"},
+  {0x011D96, Text_AppendInlineString, "Text_AppendInlineString"},
+  {0x018A90, Text_BuildNumberNameRecord, "Text_BuildNumberNameRecord"},
+  {0x018A6E, Text_BuildNumberNameForCurrentSlot, "Text_BuildNumberNameForCurrentSlot"},
+  {0x0FF87C, Score_ClearLeadAnnouncedLatch, "Score_ClearLeadAnnouncedLatch"},
+  {0x0FF7E2, Score_AnnounceLeadChange, "Score_AnnounceLeadChange"},
+  {0x0FB992, Text_FormatScorerName, "Text_FormatScorerName"},
+  {0x0FEEC8, Text_BuildPlayedByRecordD042, "Text_BuildPlayedByRecordD042"},
+  {0x0FEF5A, Text_BuildPlayedByRecordD044, "Text_BuildPlayedByRecordD044"},
+  {0x0F9C18, Sram_SyncTeamRecordWrite, "Sram_SyncTeamRecordWrite"},
+  {0x0F9C5E, Sram_SyncFixedD45ABlockWrite, "Sram_SyncFixedD45ABlockWrite"},
+  {0x0F9BDA, Sram_SyncScoreRecordWrite, "Sram_SyncScoreRecordWrite"},
+  {0x0F9C20, Sram_SyncAltTeamRecord, "Sram_SyncAltTeamRecord"},
+  {0x0F9C56, Sram_SyncAltTeamRecordWrite, "Sram_SyncAltTeamRecordWrite"},
+  {0x0FEF7C, Clamp_HalveBelow50,   "Clamp_HalveBelow50"},
+  {0x0102D2, Anim_StartScript46A,  "Anim_StartScript46A"},
+  {0x01828A, Calc_HalvingAccumulator, "Calc_HalvingAccumulator"},
+  {0x0FD46C, Team_CachePieceFrameCounts, "Team_CachePieceFrameCounts"},
+  {0x0FD4C0, Anim_ResetCycleCounters, "Anim_ResetCycleCounters"},
+  {0x00C0F8, Object_TransferSelectionFlag, "Object_TransferSelectionFlag"},
+  {0x00C0BC, Object_UpdateSelectedSlot_A, "Object_UpdateSelectedSlot_A"},
+  {0x00C0DA, Object_UpdateSelectedSlot_B, "Object_UpdateSelectedSlot_B"},
+  {0x0F7B0A, Range_WrapClamp,      "Range_WrapClamp"},
+  {0x017E04, Color_CopyBytesModeOrder, "Color_CopyBytesModeOrder"},
+  {0x007E72, Anim_QueueScoreboardEvent, "Anim_QueueScoreboardEvent"},
+  {0x011D9E, Text_AppendString,    "Text_AppendString"},
+  {0x015A38, Roster_TickPenaltyCountdowns, "Roster_TickPenaltyCountdowns"},
+  {0x0F87D2, Sfx_SelectCue,        "Sfx_SelectCue"},
+  {0x0F87EA, sub_F87EA,            "sub_F87EA"},
+  {0x0F997A, Buf_CopyBytes,        "Buf_CopyBytes"},
+  {0x01AD54, Sfx_ResetVoiceStateTable, "Sfx_ResetVoiceStateTable"},
+  {0x0170CA, Anim_ResetLineChange, "Anim_ResetLineChange"},
+  {0x01721C, Piece_CopyRecordToCache, "Piece_CopyRecordToCache"},
+  {0x00E412, Object_QueueFrame18,  "Object_QueueFrame18"},
+  {0x012F30, Object_ProcessLineChangeSlot, "Object_ProcessLineChangeSlot"},   /* re-armed 2026-08-02: shared-far-rts charge fix */
+  {0x0170B0, Anim_ResetLineChangeBothTeams, "Anim_ResetLineChangeBothTeams"},
+  {0x00784E, Lookup_D050Table,     "Lookup_D050Table"},
+  {0x0FE660, Sram_LoadSnapshotBuffer, "Sram_LoadSnapshotBuffer"},
+  {0x0FD5F4, Piece_ResolveTripleChain, "Piece_ResolveTripleChain"},
+  {0x0FECF8, Team_CompareRoster24, "Team_CompareRoster24"},
+  {0x017C72, Reset_D048Table,      "Reset_D048Table"},
+  {0x015A24, Roster_TickPenaltyCountdownsBothTeams, "Roster_TickPenaltyCountdownsBothTeams"},
+  {0x0130BE, Roster_ResetPenaltySlots, "Roster_ResetPenaltySlots"},
+  {0x00B86A, Object_FindOccupiedZoneBackward, "Object_FindOccupiedZoneBackward"},
+  {0x0F72DA, Text_WriteNullThenByteFwd, "Text_WriteNullThenByteFwd"},
+  {0x0F72FA, Text_WriteNullThenByteBack, "Text_WriteNullThenByteBack"},
+  {0x0FE172, Lookup_TeamOverallRating, "Lookup_TeamOverallRating"},
+  {0x0FD1F0, Lookup_JumpTableEntry, "Lookup_JumpTableEntry"},
+  {0x013068, Roster_UpdateResultFlag, "Roster_UpdateResultFlag"},
+  {0x01720C, Piece_CopyRecordToCacheBothTeams, "Piece_CopyRecordToCacheBothTeams"},
+  {0x0123DE, Roster_CountActiveSlots, "Roster_CountActiveSlots"},
+  {0x007800, Roster_ResetActiveCount, "Roster_ResetActiveCount"},
+  {0x0077F4, Roster_ResetActiveCountHome, "Roster_ResetActiveCountHome"},
+  {0x016C96, Copy_5605ABlockToBD28, "Copy_5605ABlockToBD28"},
+  {0x017718, Sfx_ResetQueueState, "Sfx_ResetQueueState"},
+  {0x017AC8, Calc_QueueDelayCEF0, "Calc_QueueDelayCEF0"},
+  {0x0F7144, Queue_AdvanceHomeCursor, "Queue_AdvanceHomeCursor"},
+  {0x0F7172, Queue_AdvanceAwayCursor, "Queue_AdvanceAwayCursor"},
+  {0x0F727C, Queue_AdvanceHomeCursor2, "Queue_AdvanceHomeCursor2"},
+  {0x0F72AA, Queue_AdvanceAwayCursor2, "Queue_AdvanceAwayCursor2"},
+  {0x0FE510, Sfx_InitPlaybackState, "Sfx_InitPlaybackState"},
+  {0x0FE53C, Sfx_SetPlaybackFlag, "Sfx_SetPlaybackFlag"},
+  {0x013056, Roster_UpdateBothResultFlags, "Roster_UpdateBothResultFlags"},
+  {0x0171BE, Team_LoadAndCacheTeamData, "Team_LoadAndCacheTeamData"},
+  {0x017190, Team_RefreshDataCache, "Team_RefreshDataCache"},
+  {0x0F6C44, Object_TestOrientedSign, "Object_TestOrientedSign"},
+  {0x0F6D22, Object_TestFacingOctantAttr, "Object_TestFacingOctantAttr"},
+  {0x0F6C0A, Object_ComputeApproachGate, "Object_ComputeApproachGate"},
+  {0x0FD5AE, Team_ResolveDisplayNamePtr, "Team_ResolveDisplayNamePtr"},
+  {0x0F9BE2, Sram_SyncTeamRecord, "Sram_SyncTeamRecord"},
+  {0x0F9C68, Sram_SyncFixedD45ABlock, "Sram_SyncFixedD45ABlock"},
+  {0x0F6E8A, Sram_SyncHomeAwayRecord, "Sram_SyncHomeAwayRecord"},
+  {0x01257E, Overlay_ProcessTrackedEntries, "Overlay_ProcessTrackedEntries"},
+  {0x012596, Overlay_UpdateTrackedNudge, "Overlay_UpdateTrackedNudge"},
+  {0x0FD73C, Game_ResetPerGameState, "Game_ResetPerGameState"},
+  {0x0FF3B0, Object_InitTableB04AFill, "Object_InitTableB04AFill"},
+  {0x0FEFF0, Object_ResetAndQueueEvent, "Object_ResetAndQueueEvent"},
+  {0x0F71F0, Team_ComputeAndSortLineStats, "Team_ComputeAndSortLineStats"},
+  {0x0F71A2, Team_RefreshLineIndicators, "Team_RefreshLineIndicators"},
+  {0x0F737E, Team_SumLineStatBytes, "Team_SumLineStatBytes"},
+  {0x0F7318, Team_ComputeLineDelta, "Team_ComputeLineDelta"},
+  {0x0FE548, Sfx_ResetVoiceStateFlags, "Sfx_ResetVoiceStateFlags"},
+  {0x0FE326, Sfx_AdvanceCueStreamEntry, "Sfx_AdvanceCueStreamEntry"},
+  {0x00DBBA, Object_ApproachAndSetScript, "Object_ApproachAndSetScript"},
+  {0x0FAE26, Lookup_PenaltyOrTierTable, "Lookup_PenaltyOrTierTable"},
+  {0x01702E, Object_SortDrawOrderByDepth, "Object_SortDrawOrderByDepth"},
+  {0x016DA2, Object_ResetOverlaysAndSlots, "Object_ResetOverlaysAndSlots"},
+  {0x0F9B94, Sram_SyncScoreRecord, "Sram_SyncScoreRecord"},
+  {0x0F99F2, Object_LookupRecordThenSyncScore, "Object_LookupRecordThenSyncScore"},
+  {0x017102, Object_SwapLineupBuffers, "Object_SwapLineupBuffers"},
+  {0x0FE98A, Text_ExpandDigitStream, "Text_ExpandDigitStream"},
+  {0x0100A6, Roster_ClearFlagIfNoOverLimit, "Roster_ClearFlagIfNoOverLimit"},
+  {0x00FFEA, Object_ClassifyZone, "Object_ClassifyZone"},
+  {0x011086, Rng_NextScaled, "Rng_NextScaled"},
+  {0x0110BE, Math_SqrtU32, "Math_SqrtU32"},
+  {0x015FF0, Render_QueueRowTilesC3F6, "Render_QueueRowTilesC3F6"},
+  {0x0161D0, Render_DrawClippedRunGroups, "Render_DrawClippedRunGroups"},
+  {0x01054C, Object_ScaleImpulseByObjectField, "Object_ScaleImpulseByObjectField"},
+  {0x0160F4, Sprite_EmitHeightBandPieces, "Sprite_EmitHeightBandPieces"},
+  {0x0F6EBE, Camera_UpdateShadowGate, "Camera_UpdateShadowGate"},
+  {0x015F34, Render_QueueCameraZonePieces, "Render_QueueCameraZonePieces"},
+  {0x010488, Object_ComputeBoardImpulse, "Object_ComputeBoardImpulse"},
+  {0x010366, Object_ProjectScreenColumn, "Object_ProjectScreenColumn"},
+  {0x01107A, Rng_NextSignedOffset, "Rng_NextSignedOffset"},
+  {0x010346, Object_ProjectGoalCreaseColumns, "Object_ProjectGoalCreaseColumns"},
+  {0x00CB50, Object_TriggerBoardMarkerScript, "Object_TriggerBoardMarkerScript"},   /* re-armed 2026-08-02: moveq/setw fix */
+  {0x0F70E4, Team_ComputeClampedTendencyIndex, "Team_ComputeClampedTendencyIndex"},
+  {0x015730, Object_ScaledTeamStatWord, "Object_ScaledTeamStatWord"},
+  {0x011D3A, Text_FormatFixedWidthDecimal, "Text_FormatFixedWidthDecimal"},
+  {0x00C644, sub_C644, "sub_C644"},
+  {0x010EB4, sub_10EB4, "sub_10EB4"},
+  {0x0132E2, sub_132E2, "sub_132E2"},
+  {0x013276, sub_13276, "sub_13276"},
+  {0x01826C, sub_1826C, "sub_1826C"},
+  {0x007814, sub_7814, "sub_7814"},
+  {0x011D06, sub_11D06, "sub_11D06"},
+  {0x012EF6, sub_12EF6, "sub_12EF6"},
+  {0x0FECAA, sub_FECAA, "sub_FECAA"},
+  {0x00CBE2, Nullsub_CBE2, "Nullsub_CBE2"},
+  {0x013384, Fn_13384, "Fn_13384"},
+  {0x013396, Fn_13396, "Fn_13396"},
+  {0x013E26, sub_13E26, "sub_13E26"},
+  {0x00AFB6, Camera_LatchScrollAndFlag, "Camera_LatchScrollAndFlag"},
+  {0x00BA04, sub_BA04, "sub_BA04"},
+  {0x013848, sub_13848, "sub_13848"},
+  {0x013862, sub_13862, "sub_13862"},
+  {0x014A94, sub_14A94, "sub_14A94"},
+  {0x01323E, sub_1323E, "sub_1323E"},
+  {0x018032, sub_18032, "sub_18032"},
+  {0x018002, sub_18002, "sub_18002"},
+  {0x017E42, sub_17E42, "sub_17E42"},
+  {0x017D80, sub_17D80, "sub_17D80"},
+  {0x017CA0, sub_17CA0, "sub_17CA0"},
+  {0x017D16, sub_17D16, "sub_17D16"},
+  {0x0F693E, sub_F693E, "sub_F693E"},
+  {0x00CCE8, sub_CCE8, "sub_CCE8"},
+  {0x0112BC, sub_112BC, "sub_112BC"},
+  {0x0158F2, sub_158F2, "sub_158F2"},
+  {0x015832, sub_15832, "sub_15832"},
+  {0x015788, sub_15788, "sub_15788"},
+  {0x0FEB54, sub_FEB54, "sub_FEB54"},
+  {0x0FA9F8, sub_FA9F8, "sub_FA9F8"},
+  {0x00BE26, sub_BE26, "sub_BE26"},
+  {0x00C566, sub_C566, "sub_C566"},
+  {0x0FE71C, sub_FE71C, "sub_FE71C"},
+  {0x0FE556, sub_FE556, "sub_FE556"},
+  {0x0FE7FC, sub_FE7FC, "sub_FE7FC"},
+  {0x0FE756, sub_FE756, "sub_FE756"},
+  {0x0FC570, sub_FC570, "sub_FC570"},
+  {0x0FC47C, sub_FC47C, "sub_FC47C"},
+  {0x0FE864, sub_FE864, "sub_FE864"},
+  {0x0FE8EC, sub_FE8EC, "sub_FE8EC"},
+  {0x0F998E, sub_F998E, "sub_F998E"},
+  {0x0F98C6, sub_F98C6, "sub_F98C6"},
+  {0x0FCB9A, sub_FCB9A, "sub_FCB9A"},
+  {0x01211A, sub_1211A, "sub_1211A"},
+  {0x012174, sub_12174, "sub_12174"},
+  {0x01284A, sub_1284A, "sub_1284A"},
+  {0x0128A4, sub_128A4, "sub_128A4"},
+  {0x01298C, sub_1298C, "sub_1298C"},
+  {0x014A54, sub_14A54, "sub_14A54"},
+  {0x0131F4, sub_131F4, "sub_131F4"},
+  {0x0F70A2, sub_F70A2, "sub_F70A2"},
+  {0x01803E, sub_1803E, "sub_1803E"},
+  {0x00C67A, sub_C67A, "sub_C67A"},
+  {0x00F6AA, sub_F6AA, "sub_F6AA"},
+  {0x00F6C6, sub_F6C6, "sub_F6C6"},
+  {0x0FF9A8, sub_FF9A8, "sub_FF9A8"},
+  {0x00BFBC, sub_BFBC, "sub_BFBC"},
+  {0x0FD78A, sub_FD78A, "sub_FD78A"},
+  {0x00FD22, sub_FD22, "sub_FD22"},
+  {0x0FF88E, Game_ResetPeriodStats, "Game_ResetPeriodStats"},
+  {0x0FF8C8, Team_ClearLineTable, "Team_ClearLineTable"},
+  {0x0FAFBA, Roster_PartitionBothTeams, "Roster_PartitionBothTeams"},
+  {0x0FAFE4, Roster_PartitionListedPlayers, "Roster_PartitionListedPlayers"},
+  {0x0FB750, Text_InitialCharToIndex, "Text_InitialCharToIndex"},
+  {0x0FB722, Text_NormalizeInitialChar, "Text_NormalizeInitialChar"},
+  {0x0FAF8C, Roster_LoadSelectedEntry, "Roster_LoadSelectedEntry"},
+  {0x0FAF66, Text_TrimTrailingSpaces, "Text_TrimTrailingSpaces"},
+  {0x0FDD9C, Menu_SaveRowIndex, "Menu_SaveRowIndex"},
+  {0x0FA934, Nullsub_6, "Nullsub_6"},
+  {0x013098, Object_ResetSlotTimers, "Object_ResetSlotTimers"},
+  {0x01577A, Object_StoreClampedTimer, "Object_StoreClampedTimer"},
+  {0x07E0E, Team_SelectByPossessionFlag, "Team_SelectByPossessionFlag"},
+  {0x0FA2A2, Menu_WrapCursorWord, "Menu_WrapCursorWord"},
+  {0x0FEE4A, Team_SelectByStatWord, "Team_SelectByStatWord"},
+  {0x08D82, Stack_UnwindNineRegs, "Stack_UnwindNineRegs"},
+  {0x0A600, Iter_AdvanceObjectCursor, "Iter_AdvanceObjectCursor"},
+  {0x0A616, Camera_ApplyTrackedTarget, "Camera_ApplyTrackedTarget"},
+  {0x0CA0C, Player_ZoneWhistleCheck, "Player_ZoneWhistleCheck"},
+  {0x0CA2A, Player_CountGoalOrAssist, "Player_CountGoalOrAssist"},
+  {0x0C882, Player_FaceoffOrReset, "Player_FaceoffOrReset"},
+  {0x00988E, Attr_SumPlayerRating, "Attr_SumPlayerRating"},
+  {0x0098CE, Attr_AddTableEntry, "Attr_AddTableEntry"},
+  {0x0FAF50, Team_SelectActiveBlock, "Team_SelectActiveBlock"},
+  {0x0FB8EC, Text_MeasureEntryName, "Text_MeasureEntryName"},
+  {0x0FA880, Text_AppendIndexedString, "Text_AppendIndexedString"},
+  {0x0FBBDE, Menu_StepBoundedCursor, "Menu_StepBoundedCursor"},
+  {0x009F40, Roster_CountLeadingNibbles, "Roster_CountLeadingNibbles"},
+  {0x009F5C, Roster_RatingWithNibbleBonus, "Roster_RatingWithNibbleBonus"},
+  {0x009F9A, Roster_CountLineEntries, "Roster_CountLineEntries"},
+  {0x0F9FEA, Roster_CacheBothLineCounts, "Roster_CacheBothLineCounts"},
+  {0x0185E0, Stats_SelectLeaderSlot, "Stats_SelectLeaderSlot"},
+  {0x0FAC90, Roster_FormatJerseyNumber, "Roster_FormatJerseyNumber"},
+  {0x0F9FC0, Roster_CacheBothNibbleCounts, "Roster_CacheBothNibbleCounts"},
+  {0x0F9F50, Stats_TrackTeamLeader, "Stats_TrackTeamLeader"},
+  {0x012A2E, Lineup_MatchShiftTotals, "Lineup_MatchShiftTotals"},
+  {0x0FEC5E, Stats_PickTeamRecordHolder, "Stats_PickTeamRecordHolder"},
+  {0x0F9EAA, Stats_UpdateSeasonLeaders, "Stats_UpdateSeasonLeaders"},
+  {0x0F9DDA, Stats_RecordGameResult, "Stats_RecordGameResult"},
+  {0x0F9CDE, Stats_CommitSeasonRecords, "Stats_CommitSeasonRecords"},
+  {0x012EB4, Lineup_AverageLineRating, "Lineup_AverageLineRating"},
+  {0x0FE1D8, Period_SwapSidesAndSlots, "Period_SwapSidesAndSlots"},
+  {0x00F790, Lineup_PickBestLine, "Lineup_PickBestLine"},
+  {0x0FBA76, Season_ClearTeamFromRecords, "Season_ClearTeamFromRecords"},
+  {0x0FB9D4, Season_CommitTeamName, "Season_CommitTeamName"},
+  {0x0FA014, Text_EmitTeamName, "Text_EmitTeamName"},
+  {0x0F9AE4, Text_CaptionOneTeam, "Text_CaptionOneTeam"},
+  {0x0F9B2A, Text_CaptionTwoTeams, "Text_CaptionTwoTeams"},
+  {0x0F9A64, Text_CaptionByTeam, "Text_CaptionByTeam"},
+  {0x0F9AAC, Text_CaptionVsTeams, "Text_CaptionVsTeams"},
+  {0x0FC282, Standings_SortDivision, "Standings_SortDivision"},
+  {0x011CA2, Text_FormatClock, "Text_FormatClock"},
+  {0x01867E, Draft_ScorePlayers, "Draft_ScorePlayers"},
+  {0x00A41E, Controls_ReadPadDispatch, "Controls_ReadPadDispatch"},
+  {0x00C868, sub_C868, "sub_C868"},
+  {0x013378, sub_13378, "sub_13378"},
+  {0x018B6E, sub_18B6E, "sub_18B6E"},
+  {0x00A4F6, sub_A4F6, "sub_A4F6"},
+  {0x00A67C, sub_A67C, "sub_A67C"},
+  {0x00A68C, sub_A68C, "sub_A68C"},
+  {0x00A88C, sub_A88C, "sub_A88C"},
+  {0x0FC184, sub_FC184, "sub_FC184"},
+  {0x0182A2, sub_182A2, "sub_182A2"},
+  {0x01833A, sub_1833A, "sub_1833A"},
+  {0x018192, sub_18192, "sub_18192"},
+  {0x0181F6, sub_181F6, "sub_181F6"},
+  {0x01820E, sub_1820E, "sub_1820E"},
+  {0x01821A, sub_1821A, "sub_1821A"},
+  {0x018236, sub_18236, "sub_18236"},
+  {0x0180FC, sub_180FC, "sub_180FC"},
+  {0x018380, sub_18380, "sub_18380"},
+  {0x0FE696, sub_FE696, "sub_FE696"},
+  {0x0077E4, sub_77E4, "sub_77E4"},
+  {0x017572, sub_17572, "sub_17572"},
+  {0x0FED2A, sub_FED2A, "sub_FED2A"},
+  {0x0FEE60, sub_FEE60, "sub_FEE60"},
+  {0x00878E, sub_878E, "sub_878E"},
+  {0x009F7E, sub_9F7E, "sub_9F7E"},
+  {0x008898, sub_8898, "sub_8898"},
+  {0x0F6F8C, sub_F6F8C, "sub_F6F8C"},
+  {0x0F66EE, sub_F66EE, "sub_F66EE"},
+  {0x00CBE0, nullsub_4, "nullsub_4"},
+  {0x0FEC98, sub_FEC98, "sub_FEC98"},
+  {0x0FECA2, sub_FECA2, "sub_FECA2"},
+  {0x0FCA1E, sub_FCA1E, "sub_FCA1E"},
+  {0x0FDD92, sub_FDD92, "sub_FDD92"},
+  {0x011680, VDP_SetAddress, "VDP_SetAddress"},
+  {0x01172C, Unpack_BlockCached, "Unpack_BlockCached"},
+  {0x011738, Unpack_BlockDirect, "Unpack_BlockDirect"},
+  {0x01173C, Unpack_Block, "Unpack_Block"},
+  {0x01177A, Unpack_RleStream, "Unpack_RleStream"},
+  {0x011924, Unpack_FlushPage, "Unpack_FlushPage"},
+  {0x011952, Text_SetCursorVramAddr, "Text_SetCursorVramAddr"},
+  {0x01197E, Text_FillRows, "Text_FillRows"},
+  {0x0119B8, Text_DrawFrame, "Text_DrawFrame"},
+  {0x011A06, Text_EmitFrameRow, "Text_EmitFrameRow"},
+  {0x011A2C, Text_EmitFrameTile, "Text_EmitFrameTile"},
+  {0x011B92, Text_DrawInlineString, "Text_DrawInlineString"},
+  {0x018A56, Text_ClearPeriodLabelBlock, "Text_ClearPeriodLabelBlock"},
+  {0x0F6778, Shot_PlanPuckFlight, "Shot_PlanPuckFlight"},
+  {0x0F67E4, Shot_PickAimPoint, "Shot_PickAimPoint"},
+  {0x011BA4, Text_DrawString, "Text_DrawString"},
+  {0x011EDA, Text_PlotTileAt, "Text_PlotTileAt"},
+  {0x011544, VDP_FillVramWords, "VDP_FillVramWords"},
+  {0x011B28, Text_EscSetPlane, "Text_EscSetPlane"},
+  {0x011B4C, Text_EscSetColumn, "Text_EscSetColumn"},
+  {0x011B5A, Text_EscSetRow, "Text_EscSetRow"},
+  {0x011B68, Text_EscAddColumn, "Text_EscAddColumn"},
+  {0x011B76, Text_EscAddRow, "Text_EscAddRow"},
+  {0x011B84, Text_EscSetCharsetRow, "Text_EscSetCharsetRow"},
+  {0x011B18, Text_EscSetAll, "Text_EscSetAll"},
+  {0x011A48, Text_DrawTableString, "Text_DrawTableString"},
+  {0x011A36, Text_DrawInlineTableString, "Text_DrawInlineTableString"},
+  {0x013508, Text_SkipChunksThenDraw, "Text_SkipChunksThenDraw"},
+  {0x008008, Menu_DrawGoalieModeLabel, "Menu_DrawGoalieModeLabel"},
+  {0x0FD4CA, Hud_DrawFaceoffStrengthMeter, "Hud_DrawFaceoffStrengthMeter"},
+  {0x0FCFDC, Text_DrawTwoSpaces, "Text_DrawTwoSpaces"},
+  {0x0FCFB8, Stat_DrawTeamOverall, "Stat_DrawTeamOverall"},
+  {0x008774, Text_ClearMenuBody, "Text_ClearMenuBody"},
+  {0x0F8070, Menu_DrawSetupLabels, "Menu_DrawSetupLabels"},
+  {0x0FB7CA, Text_CursorToNameSlot, "Text_CursorToNameSlot"},
+  {0x0FB77A, Text_DrawNameFieldCursor, "Text_DrawNameFieldCursor"},
+  {0x0FDC28, Stat_DrawShotTotalCell, "Stat_DrawShotTotalCell"},
+  {0x0FDB8C, Stat_DrawShotsByPeriodRow, "Stat_DrawShotsByPeriodRow"},
+  {0x0FBD86, Records_DrawColumnHeader, "Records_DrawColumnHeader"},
+  {0x0FB97C, Text_DrawFrameWithSavedWidth, "Text_DrawFrameWithSavedWidth"},
+  {0x009BB4, Text_DrawScaledLetterGrade, "Text_DrawScaledLetterGrade"},
+  {0x009112, Roster_DrawStatColumnEntry, "Roster_DrawStatColumnEntry"},
+  {0x0FB91A, Records_BuildNameChunk, "Records_BuildNameChunk"},
+  {0x0FABDC, Stat_DrawTeamRatingBlock, "Stat_DrawTeamRatingBlock"},
+  {0x0FBFA0, Records_ClearListArea, "Records_ClearListArea"},
+  {0x0FA8AC, Stat_DrawOverallRatingPercent, "Stat_DrawOverallRatingPercent"},
+  {0x0FA75C, Board_DrawScoringLine, "Board_DrawScoringLine"},
+  {0x0FAD84, Stat_DrawGoalieSaves, "Stat_DrawGoalieSaves"},
+  {0x011C72, Text_DrawPeriodAndClock, "Text_DrawPeriodAndClock"},
+  {0x00907C, Roster_DrawPenaltyLine, "Roster_DrawPenaltyLine"},
+  {0x009020, Roster_DrawPenaltyLineAtRow, "Roster_DrawPenaltyLineAtRow"},
+  {0x0133B2, Board_DrawStatPanel, "Board_DrawStatPanel"},
+  {0x0FA6E8, Board_SetCrowdCaption, "Board_SetCrowdCaption"},
+  {0x0FA708, Board_DrawSaveLine, "Board_DrawSaveLine"},
+  {0x008078, Text_DrawScoreboardCell, "Text_DrawScoreboardCell"},
+  {0x011E8E, Text_DrawBigChar, "Text_DrawBigChar"},
+  {0x011DF4, Text_DrawBigString, "Text_DrawBigString"},
+  {0x011DE2, Text_DrawBigInlineString, "Text_DrawBigInlineString"},
+  {0x012E12, Roster_DrawOnePlayerLine, "Roster_DrawOnePlayerLine"},
+  {0x012DDE, Roster_DrawLinesBothStates, "Roster_DrawLinesBothStates"},
+  {0x016384, Text_DrawIndexedChunk, "Text_DrawIndexedChunk"},
+  {0x0FF2C8, Text_DrawCenteredList, "Text_DrawCenteredList"},
+  {0x013454, Text_DrawLabelAndNumber, "Text_DrawLabelAndNumber"},
+  {0x012D0E, Text_DrawTeamLabelAndNumber, "Text_DrawTeamLabelAndNumber"},
+  {0x012D30, Roster_DrawTeamHeader, "Roster_DrawTeamHeader"},
+  {0x01268A, Board_AdvanceMessageQueue, "Board_AdvanceMessageQueue"},
+  {0x0126F8, Board_LoadMessageTilemap, "Board_LoadMessageTilemap"},
+  {0x01277A, Board_DrawMessageText, "Board_DrawMessageText"},
+  {0x012828, Board_ClearMessageLine, "Board_ClearMessageLine"},
+  {0x00E62E, Board_UpdateForNearestPlayer, "Board_UpdateForNearestPlayer"},
+  {0x0134E4, Text_SetupStatusBanner, "Text_SetupStatusBanner"},
+  {0x0134D8, Text_ClearStatusBanner, "Text_ClearStatusBanner"},
+  {0x0FEAE4, Stat_DrawCountAtCE, "Stat_DrawCountAtCE"},
+  {0x0FEAFA, Stat_DrawCountAtB4, "Stat_DrawCountAtB4"},
+  {0x00B9C2, Overlay_DrawPeriodLabel, "Overlay_DrawPeriodLabel"},
+  {0x0F84FC, Menu_ClearOptionPanes, "Menu_ClearOptionPanes"},
+  {0x00E274, Object_TestTeamSideFlag, "Object_TestTeamSideFlag"},
+  {0x00E264, Object_TestFacingAgainstSide, "Object_TestFacingAgainstSide"},
+  {0x0088C8, sub_88C8, "sub_88C8"},
+  {0x008928, sub_8928, "sub_8928"},
+  {0x0FE6D2, sub_FE6D2, "sub_FE6D2"},
+  {0x00904C, Roster_DrawPenaltyLineAtRowLower, "Roster_DrawPenaltyLineAtRowLower"},
+  {0x008FA0, Slider_ApplyPendingStep, "Slider_ApplyPendingStep"},
+  {0x008FB8, Slider_SetValueAndRedraw, "Slider_SetValueAndRedraw"},
+  {0x0093C4, Slider_DrawArrows,       "Slider_DrawArrows"},
+  {0x0099C6, Slider_DrawArrowsAlt,    "Slider_DrawArrowsAlt"},
+  {0x011044, VDP_FlushPalette,       "VDP_FlushPalette"},
+  {0x010E88, Nibble_ExpandToWords,   "Nibble_ExpandToWords"},
+  {0x0175FC, Text_DrawDashedDigitPair, "Text_DrawDashedDigitPair"},
+  {0x018CDC, Text_HexToAscii8,       "Text_HexToAscii8"},
+  {0x00B5D8, Aim_ClampDeltaToSpan,   "Aim_ClampDeltaToSpan"},
+  {0x00BC06, Event_LatchFacingAndSetFlags, "Event_LatchFacingAndSetFlags"},
+  {0x0FE1AA, Camera_CapZoneLevel,    "Camera_CapZoneLevel"},
+  {0x018AC6, Roster_DrawNameForSelectedTeam, "Roster_DrawNameForSelectedTeam"},
+  {0x009316, Roster_DrawStatusLine,  "Roster_DrawStatusLine"},
+  {0x0092BA, Roster_DrawStatusLineAtRow, "Roster_DrawStatusLineAtRow"},
+  {0x0092E6, Roster_DrawStatusLineAtRowLower, "Roster_DrawStatusLineAtRowLower"},
+  {0x0FB6F0, Text_DrawFlagLabel,     "Text_DrawFlagLabel"},
+  {0x0FCA04, Text_ClearListBody,     "Text_ClearListBody"},
+  {0x01169A, Tilemap_DrawRegion,    "Tilemap_DrawRegion"},
+  {0x012D70, Board_DrawPanel,       "Board_DrawPanel"},
+  {0x012B32, Board_DrawDeferredPanel, "Board_DrawDeferredPanel"},
+  {0x018B26, Text_BuildNumberSurname, "Text_BuildNumberSurname"},
+  {0x0FF8DE, Board_DrawTeamLogoForId, "Board_DrawTeamLogoForId"},
+  {0x0FD89A, Board_DrawPlayerNameAndLogo, "Board_DrawPlayerNameAndLogo"},
+
+  /* wave 52 (2026-08-05) */
+  {0x011F04, Gfx_UnpackAAC5A_SetBaseB012, "Gfx_UnpackAAC5A_SetBaseB012"},
+  {0x011F12, Gfx_Unpack55B86_SetBaseB01E, "Gfx_Unpack55B86_SetBaseB01E"},
+  {0x011F20, Gfx_UnpackABA1C_AtBase2,     "Gfx_UnpackABA1C_AtBase2"},
+  {0x016CC4, Gfx_UnpackAB928_AtBaseB016,  "Gfx_UnpackAB928_AtBaseB016"},
+  {0x016CD2, Gfx_UnpackA4B5C_AtBaseB01A,  "Gfx_UnpackA4B5C_AtBaseB01A"},
+  {0x016CEE, Gfx_Unpack5C410_AtBaseB026,  "Gfx_Unpack5C410_AtBaseB026"},
+  {0x0F84D0, Gfx_UnpackAFE1ADualMode,     "Gfx_UnpackAFE1ADualMode"},
+  {0x0FEA52, Gfx_UnpackIndexedTeamBlob,   "Gfx_UnpackIndexedTeamBlob"},
+  {0x017B78, Tilemap_DrawTwoRowStripAFE12, "Tilemap_DrawTwoRowStripAFE12"},
+  {0x017626, Tilemap_DrawB3640Panel,      "Tilemap_DrawB3640Panel"},
+  {0x017652, Tilemap_DrawABA14Panel,      "Tilemap_DrawABA14Panel"},
+  {0x0FD17E, Card_DrawPortraitAndClearCaption, "Card_DrawPortraitAndClearCaption"},
+  {0x0F878C, Menu_DrawPanelBackdrop,      "Menu_DrawPanelBackdrop"},
+  {0x0F8608, Menu_DrawTeamCardPane,       "Menu_DrawTeamCardPane"},
+  {0x0FA66E, Menu_DrawTeamPortraitAtCursor, "Menu_DrawTeamPortraitAtCursor"},
+  {0x00A448, Board_DrawTitleBannerF0,     "Board_DrawTitleBannerF0"},
+  {0x00A4A8, Board_DrawFullPanelFF,       "Board_DrawFullPanelFF"},
+
+  /* wave 53 (2026-08-05) */
+  {0x0F8762, Menu_DrawPanelBackdropAt1C, "Menu_DrawPanelBackdropAt1C"},
+  {0x0F8770, Menu_DrawPanelBackdropAt18, "Menu_DrawPanelBackdropAt18"},
+  {0x0F877E, Menu_DrawPanelBackdropAt3,  "Menu_DrawPanelBackdropAt3"},
+  {0x0F85B0, Menu_DrawOptionCardPane,    "Menu_DrawOptionCardPane"},
+
+  /* wave 54 (2026-08-05) */
+  {0x0FD14A, Card_DrawPortraitWithFallback, "Card_DrawPortraitWithFallback"},
+  {0x0FD084, Card_DrawBothTeamPortraits, "Card_DrawBothTeamPortraits"},
+  {0x018B5E, Text_BuildSurnameNoPad,     "Text_BuildSurnameNoPad"},
+
+  /* wave 55 (2026-08-05) */
+  {0x0162FE, Clock_RenderGameTime,       "Clock_RenderGameTime"},
+
+  /* wave 56 (2026-08-05) */
+  {0x017542, Controls_LatchMenuStep,     "Controls_LatchMenuStep"},
+
+  /* wave 57 (2026-08-05) — the expired-skip re-triages + the cold front */
+  {0x015EA4, VDP_CommitScrollPair,       "VDP_CommitScrollPair"},
+  {0x017AF4, Menu_DrawMatchupTeamStrips, "Menu_DrawMatchupTeamStrips"},
+  {0x016CE0, Gfx_Unpack5CF6C_AtBaseB026, "Gfx_Unpack5CF6C_AtBaseB026"},
+  {0x016CFC, Gfx_UnpackA78B6_AtBaseB01C, "Gfx_UnpackA78B6_AtBaseB01C"},
+  {0x016D0A, Gfx_Unpack55BFE_AtBaseB026, "Gfx_Unpack55BFE_AtBaseB026"},
+  {0x012E66, Lineup_DrawRatingMeter,     "Lineup_DrawRatingMeter"},
+  {0x00B92E, Overlay_DrawLineChangeList, "Overlay_DrawLineChangeList"},
+
+  /* wave 58 (2026-08-05) */
+  {0x0FBD7A, Records_DrawListPage,       "Records_DrawListPage"},
+  {0x0FC136, Records_DrawRankPrefix,     "Records_DrawRankPrefix"},
+  {0x0FE2C8, Sfx_TickCueStream,          "Sfx_TickCueStream"},
+};
+const int lift_routines_n = sizeof(lift_routines) / sizeof(lift_routines[0]);
