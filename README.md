@@ -112,6 +112,14 @@ the build requires your own copy of the game and verifies against it. The
 tooling in `native/` (harness, recompiler, decompilation) is this
 project's own work.
 
+**License.** `native/` is **MIT** ([`native/LICENSE`](native/LICENSE)) — fork
+it, build on it, take it wherever you want. That covers the recompiler,
+harness, decompilation, app, and scripts. It does **not** cover the 68k
+source at the repo root (`Source.asm` and friends), which derives from
+MarkeyJester's disassembly of an EA-copyrighted game and is not this
+project's to relicense. Genesis Plus GX is fetched at build time under its
+own **non-commercial** license, which any binary linking it inherits.
+
 ## Acknowledgments
 
 - **MarkeyJester** — the NHL Hockey '94 disassembly this project builds
